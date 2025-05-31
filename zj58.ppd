@@ -22,6 +22,7 @@
 *% Driver-defined attributes...
 *VariablePaperSize: True
 *1284DeviceID: "MFG:Zijiang;CMD:Zijiang;MDL:ZJ-58;CLS:PRINTER;"
+*cupsColorProfile -/-: "1.0 1.62 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0"
 *cupsVersion: 2.2
 *cupsModelNumber: 384
 *cupsManualCopies: True
@@ -209,4 +210,4 @@
 *CloseUI: *Resolution
 *CloseGroup: *CashDrawerTune
 *DefaultFont: Courier
-*% End of zj58.ppd, 10245 bytes.
+*% End of zj58.ppd, 10314 bytes.
