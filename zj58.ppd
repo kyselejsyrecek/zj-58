@@ -102,7 +102,7 @@
 *OpenGroup: BlankGroup/Blank Options
 *OpenUI *FeedDist/Feed distance: PickOne
 *OrderDependency: 10 AnySetup *FeedDist
-*DefaultFeedDist: 2feed9mm
+*DefaultFeedDist: 3feed12mm
 *FeedDist 0feed3mm/3mm: "<</AdvanceDistance 24>>setpagedevice"
 *FeedDist 1feed6mm/6mm: "<</AdvanceDistance 48>>setpagedevice"
 *FeedDist 2feed9mm/9mm: "<</AdvanceDistance 72>>setpagedevice"
@@ -209,4 +209,4 @@
 *CloseUI: *Resolution
 *CloseGroup: *CashDrawerTune
 *DefaultFont: Courier
-*% End of zj58.ppd, 10244 bytes.
+*% End of zj58.ppd, 10245 bytes.
