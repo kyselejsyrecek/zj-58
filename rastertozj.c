@@ -138,6 +138,9 @@ static const char escFlush[] = "\x1bJ";
 //static const char escCut[] = "\x1bi";
 static const char escCut[] = "\x1dV\1";
 
+// define minimal size of chunks as the number of lines which can be printed or skipped
+static const int minSafeChunkSize = 24;
+
 // enter raster mode and set up x and y dimensions
 static inline void sendRasterHeader(int xsize, int ysize) {
   //  outputCommand(rasterModeStartCommand);
@@ -510,22 +513,35 @@ int main(int argc, char *argv[]) {
       int nonzerolines = 0;
       while ( pBuf<pEnd ) {
         if (line_is_empty(pBuf, width_bytes)) {
-          if (nonzerolines) { // met zero, need to flush collected raster
+          if (nonzerolines >= minSafeChunkSize) { // met zero, need to flush collected raster
             send_raster(pChunk, width_bytes, nonzerolines);
             nonzerolines = 0;
+            ++zeroy;
+          } else if (nonzerolines == 0) { // No non-zero lines to be flushed.
+            ++zeroy;
+          } else { // Not enough lines to send to the printer. Treat this empty line as non-empty.
+            ++nonzerolines;
           }
-          ++zeroy;
-        } else {
+        } else { // line is not empty
           if (zeroy) { // met non-zero, need to feed calculated num of zero lines
-            flushManyLines(zeroy);
+            if (zeroy >= minSafeChunkSize) {
+              // Use a faster method to skip many lines.
+              // Would produce artifacts on ZJ-58 if each individual line was skipped.
+              flushManyLines(zeroy);
+            } else { // Safe approach - treat empty lines as non-empty if there are little lines to skip.
+              nonzerolines = zeroy;
+              pChunk = pBuf - width_bytes * zeroy;
+            }
             zeroy=0;
           }
-          if (!nonzerolines)
+          if (nonzerolines == 0) {
             pChunk = pBuf;
+          }
           ++nonzerolines;
         }
         pBuf += width_bytes;
       }
+      // Send any remaining raster data incl. trailing chunks of smaller size than minSafeChunkSize.
       send_raster(pChunk, width_bytes, nonzerolines);
       //flushBuffer();
     } // loop over page
